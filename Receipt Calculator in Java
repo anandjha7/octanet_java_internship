@@ -1,0 +1,99 @@
+import java.io.*;
+import java.util.*;
+
+class Item {
+    String name;
+    double price;
+    int quantity;
+
+    public Item(String name, double price, int quantity) {
+        this.name = name;
+        this.price = price;
+        this.quantity = quantity;
+    }
+    
+    public double getTotalPrice() {
+        return price * quantity;
+    }
+}
+
+class Receipt {
+    List<Item> items = new ArrayList<>();
+    double taxRate = 0.1;  // 10% tax
+    double discountRate = 0.05; // 5% discount
+
+    public void addItem(Item item) {
+        items.add(item);
+    }
+
+    public double getSubtotal() {
+        double subtotal = 0;
+        for (Item item : items) {
+            subtotal += item.getTotalPrice();
+        }
+        return subtotal;
+    }
+
+    public double calculateTax() {
+        return getSubtotal() * taxRate;
+    }
+
+    public double calculateDiscount() {
+        return getSubtotal() * discountRate;
+    }
+
+    public double getFinalTotal() {
+        return getSubtotal() + calculateTax() - calculateDiscount();
+    }
+
+    public void printReceipt() {
+        System.out.println("Receipt:");
+        for (Item item : items) {
+            System.out.println(item.name + " - " + item.quantity + " x " + item.price);
+        }
+        System.out.println("Subtotal: " + getSubtotal());
+        System.out.println("Tax: " + calculateTax());
+        System.out.println("Discount: " + calculateDiscount());
+        System.out.println("Final Total: " + getFinalTotal());
+    }
+
+    public void saveReceipt(String filename) throws IOException {
+        PrintWriter writer = new PrintWriter(new FileWriter(filename));
+        writer.println("Receipt:");
+        for (Item item : items) {
+            writer.println(item.name + " - " + item.quantity + " x " + item.price);
+        }
+        writer.println("Subtotal: " + getSubtotal());
+        writer.println("Tax: " + calculateTax());
+        writer.println("Discount: " + calculateDiscount());
+        writer.println("Final Total: " + getFinalTotal());
+        writer.close();
+    }
+}
+
+public class ReceiptCalculator {
+    public static void main(String[] args) throws IOException {
+        Scanner sc = new Scanner(System.in);
+        Receipt receipt = new Receipt();
+
+        // Input for items
+        while (true) {
+            System.out.println("Enter item name (or 'done' to finish): ");
+            String name = sc.nextLine();
+            if (name.equalsIgnoreCase("done")) break;
+
+            System.out.print("Enter price: ");
+            double price = sc.nextDouble();
+
+            System.out.print("Enter quantity: ");
+            int quantity = sc.nextInt();
+            sc.nextLine(); // consume newline
+
+            receipt.addItem(new Item(name, price, quantity));
+        }
+
+        // Print and save receipt
+        receipt.printReceipt();
+        receipt.saveReceipt("receipt.txt");
+    }
+}
