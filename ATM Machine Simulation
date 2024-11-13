@@ -1,0 +1,104 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class ATMMachine {
+    private double balance;
+    private int pin;
+    private ArrayList<String> transactionHistory;
+
+    // Constructor to initialize balance, pin, and transaction history
+    public ATMMachine(double initialBalance, int initialPin) {
+        this.balance = initialBalance;
+        this.pin = initialPin;
+        this.transactionHistory = new ArrayList<>();
+    }
+
+    // Method to display account balance
+    public void checkBalance() {
+        System.out.println("Your current balance is: $" + balance);
+        transactionHistory.add("Balance checked. Current balance: $" + balance);
+    }
+
+    // Method to withdraw cash from the account
+    public void withdrawCash(double amount) {
+        if (amount > balance) {
+            System.out.println("Insufficient balance! Withdrawal failed.");
+        } else {
+            balance -= amount;
+            System.out.println("Withdrawal successful. You withdrew: $" + amount);
+            transactionHistory.add("Withdrew: $" + amount + ". Remaining balance: $" + balance);
+        }
+    }
+
+    // Method to deposit cash into the account
+    public void depositCash(double amount) {
+        balance += amount;
+        System.out.println("Deposit successful. You deposited: $" + amount);
+        transactionHistory.add("Deposited: $" + amount + ". New balance: $" + balance);
+    }
+
+    // Method to change PIN
+    public void changePin(int newPin) {
+        pin = newPin;
+        System.out.println("PIN change successful.");
+        transactionHistory.add("PIN changed.");
+    }
+
+    // Method to display transaction history
+    public void viewTransactionHistory() {
+        System.out.println("Transaction History:");
+        for (String transaction : transactionHistory) {
+            System.out.println(transaction);
+        }
+    }
+
+    // Main method to simulate the ATM machine functionality
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Create an ATM object with initial balance and pin
+        ATMMachine atm = new ATMMachine(1000.0, 1234);
+
+        while (true) {
+            System.out.println("\nATM Machine Simulation:");
+            System.out.println("1. Balance Inquiry");
+            System.out.println("2. Cash Withdrawal");
+            System.out.println("3. Cash Deposit");
+            System.out.println("4. Change PIN");
+            System.out.println("5. View Transaction History");
+            System.out.println("6. Exit");
+
+            System.out.print("Enter your choice: ");
+            int choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1: // Balance Inquiry
+                    atm.checkBalance();
+                    break;
+                case 2: // Cash Withdrawal
+                    System.out.print("Enter amount to withdraw: ");
+                    double withdrawAmount = scanner.nextDouble();
+                    atm.withdrawCash(withdrawAmount);
+                    break;
+                case 3: // Cash Deposit
+                    System.out.print("Enter amount to deposit: ");
+                    double depositAmount = scanner.nextDouble();
+                    atm.depositCash(depositAmount);
+                    break;
+                case 4: // Change PIN
+                    System.out.print("Enter new PIN: ");
+                    int newPin = scanner.nextInt();
+                    atm.changePin(newPin);
+                    break;
+                case 5: // View Transaction History
+                    atm.viewTransactionHistory();
+                    break;
+                case 6: // Exit
+                    System.out.println("Thank you for using the ATM machine. Goodbye!");
+                    System.exit(0);
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
+}
